@@ -10,7 +10,7 @@
 #include "WProgram.h"
 #endif
 
-extern uint8_t CSDataArray[2];
+extern uint8_t 64DataArray[2];
 
 class 64shield
 {
