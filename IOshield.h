@@ -12,7 +12,7 @@
 
 extern uint8_t IODataArray[2];
 
-class 64shield
+class IOshield
 {
         public:
                       IOshield();
