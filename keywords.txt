@@ -1,4 +1,4 @@
-64shield	KEYWORD1
+IOshield	KEYWORD1
 initialize	KEYWORD2
 pinMode		KEYWORD2
 pinPullup	KEYWORD2
