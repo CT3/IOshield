@@ -9,9 +9,9 @@
 #include "64shield.h"
 #include <Wire.h>
 
-uint8_t 64DataArray[2] = {0};
+uint8_t IODataArray[2] = {0};
 
-#define 64Address 0b0100000
+#define IOAddress 0b0100000
 
 64shield::64shield()
 {
@@ -24,13 +24,13 @@ void 64shield::initialize()
 
   for (int j = 0; j < 7; j++) {
 
-    64DataArray[0] = 255;
-    64DataArray[1] = 255;
+    IODataArray[0] = 255;
+    IODataArray[1] = 255;
 
     WriteRegisters(j, 0x00, 2);
 
-    64DataArray[0] = 0;
-    64DataArray[1] = 0;
+    IODataArray[0] = 0;
+    IODataArray[1] = 0;
 
     for (int k = 2; k < 0x15; k+=2) {
       WriteRegisters(j, k, 2);
@@ -47,12 +47,12 @@ void 64shield::WriteRegisters(int port, int startregister, int quantity) {
 #if defined(ARDUINO) && ARDUINO >= 100
     Wire.write((byte)startregister);
     for (int i = 0; i < quantity; i++) {
-		Wire.write((byte)64DataArray[i]);
+		Wire.write((byte)IODataArray[i]);
     }
 #else
     Wire.send((byte)startregister);
     for (int i = 0; i < quantity; i++) {
-		Wire.send((byte)64DataArray[i]);
+		Wire.send((byte)IODataArray[i]);
     }
 #endif
 
@@ -66,16 +66,16 @@ void 64shield::ReadRegisters(int port, int startregister, int quantity) {
 #if defined(ARDUINO) && ARDUINO >= 100
 	Wire.write((byte)startregister);
 	Wire.endTransmission();
-	Wire.requestFrom(64Address + port, quantity);
+	Wire.requestFrom(IOAddress + port, quantity);
 	for (int i = 0; i < quantity; i++) {
-		64DataArray[i] = Wire.read();
+		IODataArray[i] = Wire.read();
 	}
 #else
 	Wire.send((byte)startregister);
 	Wire.endTransmission();
-	Wire.requestFrom(64Address + port, quantity);
+	Wire.requestFrom(IOAddress + port, quantity);
 	for (int i = 0; i < quantity; i++) {
-		64DataArray[i] = Wire.receive();
+		IODataArray[i] = Wire.receive();
 	}
 #endif
 
@@ -87,10 +87,10 @@ void 64shield::WriteRegisterPin(int port, int regpin, int subregister, int level
   ReadRegisters(port, subregister, 1); 
   
   if (level == 0) {
-    64DataArray[0] &= ~(1 << regpin);
+    IODataArray[0] &= ~(1 << regpin);
   }
   else {
-    64DataArray[0] |= (1 << regpin);
+    IODataArray[0] |= (1 << regpin);
   }
   
   WriteRegisters(port, subregister, 1);
@@ -138,7 +138,7 @@ int 64shield::digitalRead(int pin) {
 
   ReadRegisters(port, 0x12 + subregister, 1);
 
-  int returnval = (64DataArray[0] >> (pin - ((port << 1) + subregister)*8)) & 1;
+  int returnval = (IODataArray[0] >> (pin - ((port << 1) + subregister)*8)) & 1;
 
   return returnval;
 
@@ -146,8 +146,8 @@ int 64shield::digitalRead(int pin) {
 
 void 64shield::portMode(int port, int value) {
   
-  64DataArray[0] = value;
-  64DataArray[1] = value>>8;
+  IODataArray[0] = value;
+  IODataArray[1] = value>>8;
   
   WriteRegisters(port, 0x00, 2);
   
@@ -155,8 +155,8 @@ void 64shield::portMode(int port, int value) {
 
 void 64shield::portWrite(int port, int value) {
   
-  64DataArray[0] = value;
-  64DataArray[1] = value>>8;
+  IODataArray[0] = value;
+  IODataArray[1] = value>>8;
   
   WriteRegisters(port, 0x12, 2);
   
@@ -164,8 +164,8 @@ void 64shield::portWrite(int port, int value) {
 
 void 64shield::portPullup(int port, int value) {
   
-  64DataArray[0] = value;
-  64DataArray[1] = value>>8;
+  IODataArray[0] = value;
+  IODataArray[1] = value>>8;
   
   WriteRegisters(port, 0x0C, 2);
   
@@ -175,8 +175,8 @@ int 64shield::portRead(int port) {
 
   ReadRegisters(port, 0x12, 2);
 
-  int receivedval = 64DataArray[0];
-  receivedval |= 64DataArray[1] << 8;
+  int receivedval = IODataArray[0];
+  receivedval |= IODataArray[1] << 8;
 
   return receivedval;  
 
