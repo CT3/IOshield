@@ -1,8 +1,8 @@
-// Example code for Centipede Library
+// Example code for 64shield Library
 // Works with Centipede Shield or MCP23017 on Arduino I2C port
  
 #include <Wire.h>
-#include <64shield.h>
+#include <IOshield.h>
  
  
 /* Available commands
@@ -28,7 +28,7 @@
   IO.portPullup(0, 0b0111111001111110); // 0 = no pullup, 1 = pullup
 */
  
-64shield IO; // create 64shield object
+IOshield IO; // create 64shield object
  
  
 void setup()
